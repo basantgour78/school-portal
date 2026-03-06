@@ -155,19 +155,33 @@ const StudentForm = ({ isEditMode }) => {
           <form onSubmit={handleSubmit}>
             {/* Personal Information */}
             <h3>Personal Information</h3>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Student Name *</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter full name"
+                />
+                {errors.name && <div className="error-message">{errors.name}</div>}
+              </div>
 
-            <div className="form-group">
-              <label>Student Name *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter full name"
-              />
-              {errors.name && <div className="error-message">{errors.name}</div>}
+              <div className="form-group">
+                <label>Class *</label>
+                <select name="class" value={formData.class} onChange={handleChange}>
+                  <option value="">Select Class</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((c) => (
+                    <option key={c} value={c}>
+                      Class {c}
+                    </option>
+                  ))}
+                </select>
+                {errors.class && <div className="error-message">{errors.class}</div>}
+              </div>
             </div>
-
+            
             <div className="form-row">
               <div className="form-group">
                 <label>Father's Name *</label>
@@ -194,20 +208,7 @@ const StudentForm = ({ isEditMode }) => {
               </div>
             </div>
 
-            <div className="form-row-three">
-              <div className="form-group">
-                <label>Class *</label>
-                <select name="class" value={formData.class} onChange={handleChange}>
-                  <option value="">Select Class</option>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((c) => (
-                    <option key={c} value={c}>
-                      Class {c}
-                    </option>
-                  ))}
-                </select>
-                {errors.class && <div className="error-message">{errors.class}</div>}
-              </div>
-
+            <div className="form-row">
               <div className="form-group">
                 <label>Date of Birth *</label>
                 <input
@@ -283,7 +284,7 @@ const StudentForm = ({ isEditMode }) => {
             {/* ID Information */}
             <h3 style={{ marginTop: '30px' }}>ID Information</h3>
 
-            <div className="form-row">
+            <div className="form-row-three">
               <div className="form-group">
                 <label>Aadhar Number *</label>
                 <input
@@ -308,18 +309,18 @@ const StudentForm = ({ isEditMode }) => {
                 />
                 {errors.samagra_id && <div className="error-message">{errors.samagra_id}</div>}
               </div>
-            </div>
 
-            <div className="form-group">
-              <label>Family ID (Samagra) *</label>
-              <input
-                type="text"
-                name="familyId"
-                value={formData.familyId}
-                onChange={handleChange}
-                placeholder="Enter Family ID"
-              />
-              {errors.familyId && <div className="error-message">{errors.familyId}</div>}
+              <div className="form-group">
+                <label>Family ID (Samagra) *</label>
+                <input
+                  type="text"
+                  name="familyId"
+                  value={formData.familyId}
+                  onChange={handleChange}
+                  placeholder="Enter Family ID"
+                />
+                {errors.familyId && <div className="error-message">{errors.familyId}</div>}
+              </div>
             </div>
 
             {/* Parental Information */}
@@ -356,7 +357,7 @@ const StudentForm = ({ isEditMode }) => {
             {/* Banking Information */}
             <h3 style={{ marginTop: '30px' }}>Banking Information (Optional)</h3>
 
-            <div className="form-row">
+            <div className="form-row-three">
               <div className="form-group">
                 <label>Account Number</label>
                 <input
@@ -381,17 +382,17 @@ const StudentForm = ({ isEditMode }) => {
                 />
                 {errors.ifscCode && <div className="error-message">{errors.ifscCode}</div>}
               </div>
-            </div>
 
-            <div className="form-group">
-              <label>Bank Name</label>
-              <input
-                type="text"
-                name="bankName"
-                value={formData.bankName}
-                onChange={handleChange}
-                placeholder="Enter bank name"
-              />
+              <div className="form-group">
+                <label>Bank Name</label>
+                <input
+                  type="text"
+                  name="bankName"
+                  value={formData.bankName}
+                  onChange={handleChange}
+                  placeholder="Enter bank name"
+                />
+              </div>
             </div>
 
             <div className="form-actions">
