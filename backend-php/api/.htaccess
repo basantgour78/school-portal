@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /school-project/backend-php/api/
+    
+    # If the request is not for a real file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Rewrite to index.php
+    RewriteRule ^(.*)$ index.php?request=$1 [QSA,L]
+</IfModule>
+
+# Allow JSON content type
+<Files "*.php">
+    AddType application/x-httpd-php php
+</Files>
+
+# Headers
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>

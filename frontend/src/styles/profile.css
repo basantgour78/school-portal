@@ -1,0 +1,40 @@
+.profile-page {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+  }
+
+  .profile-actions {
+    width: 100%;
+  }
+
+  .profile-actions .btn {
+    flex: 1;
+  }
+}
+
+@media print {
+  .navbar,
+  .sidebar,
+  .profile-actions,
+  .back-button {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 0;
+  }
+
+  .profile-page {
+    background: white;
+  }
+
+  .card {
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+}

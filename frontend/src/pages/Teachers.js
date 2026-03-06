@@ -1,0 +1,148 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
+import { teacherAPI } from '../utils/api';
+import '../styles/list.css';
+
+const Teachers = () => {
+  const navigate = useNavigate();
+  const [teachers, setTeachers] = useState([]);
+  const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchTeachers();
+  }, [search, currentPage]);
+
+  const fetchTeachers = async () => {
+    setLoading(true);
+    try {
+      const response = await teacherAPI.getAll({
+        search,
+        page: currentPage,
+        limit: 10,
+      });
+      setTeachers(response.data.data.teachers);
+      setTotalPages(response.data.data.pages);
+    } catch (error) {
+      console.error('Error fetching teachers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this teacher?')) {
+      try {
+        await teacherAPI.delete(id);
+        fetchTeachers();
+      } catch (error) {
+        alert(`Error: ${error.response?.data?.message || 'Failed to delete'}`);
+      }
+    }
+  };
+
+  return (
+    <Layout>
+      <div className="list-page">
+        <div className="list-header">
+          <h1>Teachers Management</h1>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate('/teachers/add')}
+          >
+            ➕ Add New Teacher
+          </button>
+        </div>
+
+        <div className="card">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search by name, subject, or email..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+
+          {loading ? (
+            <div className="spinner"></div>
+          ) : teachers.length > 0 ? (
+            <>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Subject</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {teachers.map((teacher) => (
+                    <tr key={teacher._id}>
+                      <td>{teacher.name}</td>
+                      <td>{teacher.subject}</td>
+                      <td>{teacher.email}</td>
+                      <td>{teacher.mobileNumber}</td>
+                      <td>
+                        <div className="action-buttons">
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => navigate(`/teachers/${teacher._id}`)}
+                          >
+                            View
+                          </button>
+                          <button
+                            className="btn btn-secondary"
+                            onClick={() => navigate(`/teachers/edit/${teacher._id}`)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => handleDelete(teacher._id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="pagination">
+                {currentPage > 1 && (
+                  <button onClick={() => setCurrentPage(currentPage - 1)}>← Previous</button>
+                )}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    className={currentPage === page ? 'active' : ''}
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+                {currentPage < totalPages && (
+                  <button onClick={() => setCurrentPage(currentPage + 1)}>Next →</button>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="alert alert-info">No teachers found. Add a new teacher to get started!</div>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
+export default Teachers;
