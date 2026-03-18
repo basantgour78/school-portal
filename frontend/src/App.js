@@ -12,6 +12,8 @@ import TeacherDetail from './pages/TeacherDetail';
 import Students from './pages/Students';
 import StudentForm from './pages/StudentForm';
 import StudentDetail from './pages/StudentDetail';
+import FeeStatement from './pages/FeeStatement';
+import FeePayment from './pages/FeePayment';
 
 function App() {
   return (
@@ -94,6 +96,32 @@ function App() {
           element={
             <ProtectedRoute>
               <StudentDetail />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Fee Payment Routes */}
+        <Route
+          path="/fee-statement"
+          element={
+            <ProtectedRoute>
+              <FeeStatement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/fee-payment"
+          element={
+            <ProtectedRoute>
+              <FeePayment isEditMode={false} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/fee-payment/edit/:id"
+          element={
+            <ProtectedRoute>
+              <FeePayment isEditMode={true} />
             </ProtectedRoute>
           }
         />

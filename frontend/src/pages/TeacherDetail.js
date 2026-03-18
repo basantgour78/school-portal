@@ -36,10 +36,6 @@ const TeacherDetail = () => {
     }
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   if (loading) {
     return (
       <Layout>
@@ -64,9 +60,6 @@ const TeacherDetail = () => {
           <div className="profile-actions">
             <button className="btn btn-primary" onClick={() => navigate(`/teachers/edit/${id}`)}>
               ✏️ Edit
-            </button>
-            <button className="btn btn-secondary" onClick={handlePrint}>
-              🖨️ Print
             </button>
             <button className="btn btn-danger" onClick={handleDelete}>
               🗑️ Delete

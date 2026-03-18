@@ -41,4 +41,13 @@ export const studentAPI = {
   getStatistics: () => api.get('/students/statistics/summary'),
 };
 
+// Fee Payments API calls
+export const feePaymentAPI = {
+  getAll: (params) => api.get('/fee-payments', { params }),
+  getById: (id) => api.get(`/fee-payments/${id}`),
+  create: (data) => api.post('/fee-payments', data),
+  update: (id, data) => api.put(`/fee-payments/${id}`, data),
+  delete: (id) => api.delete(`/fee-payments/${id}`),
+};
+
 export default api;

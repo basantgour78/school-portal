@@ -82,7 +82,7 @@
 .main-content {
   flex: 1;
   margin-left: 280px;
-  padding: 30px;
+  padding: 20px 10px;
   overflow-y: auto;
 }
 

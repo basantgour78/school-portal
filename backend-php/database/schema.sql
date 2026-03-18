@@ -37,6 +37,7 @@ CREATE TABLE `students` (
   `name` VARCHAR(100) NOT NULL,
   `fatherName` VARCHAR(100) NOT NULL,
   `motherName` VARCHAR(100) NOT NULL,
+  `gender` ENUM('Male', 'Female') NOT NULL,
   `class` VARCHAR(10) NOT NULL,
   `dob` DATE NOT NULL,
   `doa` DATE NOT NULL,
@@ -77,5 +78,22 @@ CREATE TABLE `student_documents` (
   `uploadedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
   INDEX `student_id_idx` (`student_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Fee Payments Table
+CREATE TABLE `fee_payments` (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `student_id` INT NOT NULL,
+  `admin_id` INT NOT NULL,
+  `amount` DECIMAL(10, 2) NOT NULL,
+  `remark` TEXT,
+  `payment_date` DATE NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE RESTRICT,
+  INDEX `student_id_idx` (`student_id`),
+  INDEX `admin_id_idx` (`admin_id`),
+  INDEX `payment_date_idx` (`payment_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ?>

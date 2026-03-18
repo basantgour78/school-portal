@@ -20,6 +20,7 @@ const StudentForm = ({ isEditMode }) => {
     name: '',
     fatherName: '',
     motherName: '',
+    gender: '',
     class: '',
     dob: '',
     doa: '',
@@ -70,6 +71,7 @@ const StudentForm = ({ isEditMode }) => {
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.fatherName.trim()) newErrors.fatherName = 'Father name is required';
     if (!formData.motherName.trim()) newErrors.motherName = 'Mother name is required';
+    if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.class) newErrors.class = 'Class is required';
     if (!formData.dob) newErrors.dob = 'DOB is required';
     if (!validateDOB(formData.dob)) newErrors.dob = 'Student must be at least 3 years old';
@@ -205,6 +207,18 @@ const StudentForm = ({ isEditMode }) => {
                   placeholder="Enter mother's name"
                 />
                 {errors.motherName && <div className="error-message">{errors.motherName}</div>}
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Gender *</label>
+                <select name="gender" value={formData.gender} onChange={handleChange}>
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                {errors.gender && <div className="error-message">{errors.gender}</div>}
               </div>
             </div>
 

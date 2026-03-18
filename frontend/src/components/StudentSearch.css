@@ -1,0 +1,152 @@
+.student-search-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.student-search-group label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.required {
+  color: #f44336;
+  margin-left: 2px;
+}
+
+.student-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.student-search-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.student-search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.student-search-input::placeholder {
+  color: #999;
+}
+
+.student-search-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+}
+
+.student-search-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-search-item:last-child {
+  border-bottom: none;
+}
+
+.student-search-item:hover {
+  background-color: #f5f7ff;
+}
+
+.student-name {
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  flex: 1;
+}
+
+.student-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.class-badge,
+.aadhar-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.class-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.aadhar-badge {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.student-search-empty {
+  padding: 16px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Scrollbar Styling */
+.student-search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.student-search-dropdown::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.student-search-dropdown::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 8px;
+}
+
+.student-search-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #764ba2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .student-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .student-search-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .student-name {
+    width: 100%;
+  }
+}

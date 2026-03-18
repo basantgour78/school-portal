@@ -22,7 +22,7 @@
 
 This will create:
 - Database: `school_management`
-- Tables: `admins`, `teachers`, `students`, `student_documents`
+- Tables: `admins`, `teachers`, `students`, `student_documents`, `fee_payments`
 
 ## Step 3: Seed Dummy Data
 
@@ -35,6 +35,7 @@ This will insert:
 - 1 Admin account
 - 5 Teachers
 - 6 Students with full details
+- 9 Sample fee payment records
 
 ## Step 4: Update Frontend Configuration
 
@@ -145,6 +146,13 @@ define('JWT_SECRET', 'your_unique_secret_key_here');
 - `PUT /api/index.php?request=students/1` - Update student
 - `DELETE /api/index.php?request=students/1` - Delete student
 - `GET /api/index.php?request=students/statistics/summary` - Get statistics
+
+### Fee Payments
+- `GET /api/index.php?request=fee-payments` - List all payments (supports search, class filter, date range, pagination)
+- `POST /api/index.php?request=fee-payments` - Record new payment (auto-captures admin ID)
+- `GET /api/index.php?request=fee-payments/1` - Get payment details
+- `PUT /api/index.php?request=fee-payments/1` - Update payment
+- `DELETE /api/index.php?request=fee-payments/1` - Delete payment
 
 ## ✅ Everything Ready!
 

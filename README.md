@@ -16,13 +16,33 @@ A comprehensive web application for managing school operations including teacher
 
 ### Student Management
 - **Comprehensive Student Registration**: 
-  - Personal info: Name, Parents' names, Class, DOB, DOA, Caste, Category, Address
+  - Personal info: Name, Parents' names, Gender, Class, DOB, DOA, Caste, Category, Address
   - IDs: Aadhar, Samagra ID, Family ID
   - Parental info: Father's and Mother's Aadhar numbers
   - Banking: Account number, IFSC code, Bank name
   - Documents: File uploads
 - **Advanced Search & Filters**: Filter by class, search by name or Samagra ID
-- **Detailed Student Profiles**: Comprehensive, printable student profiles
+- **Detailed Student Profiles**: Comprehensive student profiles with gender information
+- **Gender Field**: Track student gender (Male/Female) in all forms and profiles
+
+### Fee Management
+- **Fee Payment Recording**: Admin-only feature to record student fee payments
+  - Search students by name with autocomplete
+  - Enter payment amount
+  - Add payment remarks/notes
+  - Auto-capture current date and admin information
+- **Fee Statement**: Advanced payment tracking page
+  - Search payments by student name (autocomplete)
+  - Filter by student class
+  - Filter by date range (From/To)
+  - Pagination with configurable rows per page
+  - Real-time filtering (no apply button needed)
+- **Payment Details Modal**: View detailed payment information
+  - Student and payment details
+  - Admin who received the payment
+  - Payment date and remarks
+  - **Custom Receipt Printing**: Generate and print professional fee receipts (A4 or thermal paper size)
+- **Admin Tracking**: Each payment records which admin processed it for accountability
 
 ### Dashboard
 - Real-time statistics
@@ -46,53 +66,53 @@ A comprehensive web application for managing school operations including teacher
 - **CSS3**: Responsive styling
 
 ### Backend
-- **Node.js & Express**: Server and API
-- **MongoDB & Mongoose**: Database and ODM
-- **JWT**: Authentication
-- **bcryptjs**: Password hashing
+- **PHP 7.4+**: Server-side scripting language
+- **MySQL 5.7+**: Relational database
+- **JWT (JSON Web Tokens)**: Authentication
+- **PHP MySQLi**: Database connection
 - **CORS**: Cross-Origin Resource Sharing
 
 ## 📦 Prerequisites
 
-- Node.js (v14 or higher)
+- PHP 7.4 or higher (with MySQLi extension)
+- MySQL 5.7 or higher
+- XAMPP, WAMP, or MAMP (local server)
+- Node.js v14+ (for frontend development)
 - npm or yarn
-- MongoDB (local or Atlas)
 
 ## 🔧 Installation & Setup
 
-### Backend Setup
+### Backend Setup (PHP + MySQL)
 
-1. Navigate to backend directory:
-```bash
-cd backend
-```
+1. Copy backend files to web server root:
+   - **XAMPP**: Copy `backend-php` folder to `C:\xampp\htdocs\school-project\backend-php`
+   - **WAMP**: Copy `backend-php` folder to `C:\wamp64\www\school-project\backend-php`
+   - **MAMP**: Copy `backend-php` folder to `/Applications/MAMP/htdocs/school-project/backend-php`
 
-2. Install dependencies:
-```bash
-npm install
-```
+2. Create the database via PhpMyAdmin:
+   - Open `http://localhost/phpmyadmin`
+   - Go to **SQL** tab
+   - Copy and paste contents of `backend-php/database/schema.sql`
+   - Click **Go**
 
-3. Create a `.env` file with the following variables:
-```env
-MONGODB_URI=mongodb://localhost:27017/school_management
-JWT_SECRET=your_jwt_secret_key_change_this_in_production
-PORT=5000
-NODE_ENV=development
-ADMIN_EMAIL=admin@school.com
-ADMIN_PASSWORD=admin123
-```
+3. Seed dummy data via PhpMyAdmin:
+   - In the same SQL tab
+   - Copy and paste contents of `backend-php/database/seed.sql`
+   - Click **Go**
 
-4. Seed dummy data:
-```bash
-node seeders/seed.js
-```
+4. (Optional) Configure database connection:
+   - Edit `backend-php/config/Database.php` if needed:
+   ```php
+   define('DB_HOST', 'localhost');
+   define('DB_USER', 'root');
+   define('DB_PASS', '');
+   define('DB_NAME', 'school_management');
+   define('JWT_SECRET', 'your_unique_secret_key');
+   ```
 
-5. Start the server:
-```bash
-npm run dev
-```
-
-The backend will run on `http://localhost:5000`
+5. Test the backend:
+   - Open `http://localhost/school-project/backend-php/api/index.php?request=health`
+   - Should return: `{"success":true,"message":"Server is running"}`
 
 ### Frontend Setup
 
@@ -108,7 +128,7 @@ npm install
 
 3. Create a `.env` file:
 ```env
-REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_API_URL=http://localhost/school-project/backend-php/api
 ```
 
 4. Start the development server:
@@ -145,6 +165,13 @@ The frontend will open at `http://localhost:3000`
 - `DELETE /api/students/:id` - Delete student
 - `GET /api/students/statistics/summary` - Get statistics
 
+### Fee Payments
+- `GET /api/fee-payments` - Get all fee payments (with search, class filter, date range, pagination)
+- `POST /api/fee-payments` - Record new fee payment (auto-captures admin ID)
+- `GET /api/fee-payments/:id` - Get payment details
+- `PUT /api/fee-payments/:id` - Update fee payment
+- `DELETE /api/fee-payments/:id` - Delete fee payment
+
 ## 🔐 Validation Rules
 
 - **Mobile Number**: Must be exactly 10 digits
@@ -163,14 +190,24 @@ The frontend will open at `http://localhost:3000`
 - Name, Subject, Email, Mobile Number, ProfileImage, Timestamps
 
 ### Student
-- Personal: Name, Parents' names, Class, DOB, DOA, Caste, Category, Address, Mobile
+- Personal: Name, Parents' names, Gender, Class, DOB, DOA, Caste, Category, Address, Mobile
 - IDs: Aadhar, Samagra ID, Family ID
 - Parental: Aadhar numbers
 - Banking: Account, IFSC, Bank name
 - Documents: Array of uploaded files
 - Timestamps
 
-## 🖨️ Printable Profiles
+### Fee Payments
+- Payment ID, Student ID, Admin ID, Amount, Remarks, Payment Date
+- Tracks which admin recorded the payment
+- Timestamps (Created at, Updated at)
+
+## 💳 Fee Management Features
+- **Payment Recording**: Admins can record student fee payments with details
+- **Payment Tracking**: Each payment is associated with the admin who recorded it
+- **Advanced Reporting**: Search, filter by class/date, and paginate through payments
+- **Receipt Generation**: Print professional receipts for payments
+- **Real-time Filters**: Filters work instantly as you type (student name) or select (class, dates)
 
 Both teacher and student profiles can be printed with the print button. The styles automatically hide navigation elements during printing.
 
@@ -189,29 +226,19 @@ Both teacher and student profiles can be printed with the print button. The styl
 ## 📝 File Structure
 
 ```
-school-portal/
-├── backend/
+school-project/
+├── backend-php/
+│   ├── api/
+│   │   ├── index.php                # Main API handler
+│   │   └── .htaccess                # URL rewriting
 │   ├── config/
-│   │   └── db.js
-│   ├── models/
-│   │   ├── Admin.js
-│   │   ├── Teacher.js
-│   │   └── Student.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── teachers.js
-│   │   └── students.js
-│   ├── middleware/
-│   │   └── auth.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── teacherController.js
-│   │   └── studentController.js
-│   ├── seeders/
-│   │   └── seed.js
-│   ├── .env
-│   ├── server.js
-│   └── package.json
+│   │   └── Database.php             # Database configuration
+│   ├── includes/
+│   │   ├── Auth.php                 # JWT authentication
+│   │   └── Validation.php           # Input validation
+│   └── database/
+│       ├── schema.sql               # Database schema
+│       └── seed.sql                 # Dummy data
 │
 └── frontend/
     ├── public/
@@ -219,7 +246,8 @@ school-portal/
     ├── src/
     │   ├── components/
     │   │   ├── Layout.js
-    │   │   └── ProtectedRoute.js
+    │   │   ├── ProtectedRoute.js
+    │   │   └── StudentSearch.js
     │   ├── pages/
     │   │   ├── Login.js
     │   │   ├── Dashboard.js
@@ -228,7 +256,9 @@ school-portal/
     │   │   ├── TeacherDetail.js
     │   │   ├── Students.js
     │   │   ├── StudentForm.js
-    │   │   └── StudentDetail.js
+    │   │   ├── StudentDetail.js
+    │   │   ├── FeePayment.js
+    │   │   └── FeeStatement.js
     │   ├── utils/
     │   │   ├── api.js
     │   │   └── validation.js
@@ -248,19 +278,25 @@ school-portal/
 
 ## 🐛 Troubleshooting
 
-### MongoDB Connection Error
-- Ensure MongoDB is running on your system
-- Verify MONGODB_URI in .env file
-- For MongoDB Atlas, ensure IP is whitelisted
+### Cannot connect to database
+- Ensure MySQL is running on your system
+- Check that credentials in `backend-php/config/Database.php` are correct
+- Verify database exists in PhpMyAdmin
+- If database doesn't exist, run schema.sql from PhpMyAdmin
+
+### API returns 404
+- Verify that backend-php folder is in your web server root directory
+- Ensure PHP is running (XAMPP/WAMP/MAMP started)
+- Check that the API URL in frontend .env matches your server configuration
 
 ### CORS Error
-- Check that backend URL in frontend .env is correct
-- Verify CORS is enabled in Express backend
-- Check for network/firewall issues
+- Ensure backend API URL in frontend .env is correct
+- CORS headers are enabled in the PHP backend
+- Check for any typos in the API URL
 
 ### Form Validation Errors
-- Ensure inputs match the validation rules
-- Check browser console for detailed error messages
+- Ensure inputs match the validation rules (Aadhar: 12 digits, Mobile: 10 digits, etc.)
+- Check browser console (F12) for detailed error messages
 - Verify all required fields are filled
 
 ## 📬 Future Enhancements

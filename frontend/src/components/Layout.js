@@ -29,6 +29,9 @@ const Layout = ({ children }) => {
           <Link to="/students" className="nav-item">
             👨‍🎓 Students
           </Link>
+          <Link to="/fee-statement" className="nav-item">
+            💰 Fee Statement
+          </Link>
         </nav>
 
         <div className="sidebar-footer">
