@@ -44,6 +44,7 @@ export const studentAPI = {
 // Fee Payments API calls
 export const feePaymentAPI = {
   getAll: (params) => api.get('/fee-payments', { params }),
+  getSummary: (params) => api.get('/fee-payments/summary', { params }),
   getById: (id) => api.get(`/fee-payments/${id}`),
   create: (data) => api.post('/fee-payments', data),
   update: (id, data) => api.put(`/fee-payments/${id}`, data),

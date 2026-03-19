@@ -54,6 +54,10 @@ switch ($request) {
         if ($method === 'GET') getFeePayments($conn);
         elseif ($method === 'POST') createFeePayment($conn);
         break;
+
+    case 'fee-payments/summary':
+        if ($method === 'GET') getFeePaymentSummary($conn);
+        break;
     
     case preg_match('/^fee-payments\/(\d+)$/', $request, $matches) ? $matches[0] : null:
         $paymentId = $matches[1];
@@ -325,7 +329,7 @@ function getStudents($conn) {
     
     $whereClause = 'WHERE 1=1';
     if ($search) {
-        $whereClause .= " AND (name LIKE '%$search%' OR samagra_id LIKE '%$search%')";
+        $whereClause .= " AND (name LIKE '%$search%' OR aadharNumber LIKE '%$search%')";
     }
     if ($class) {
         $whereClause .= " AND class = '$class'";
@@ -534,6 +538,7 @@ function getFeePayments($conn) {
     $class = isset($_GET['class']) ? $conn->real_escape_string($_GET['class']) : '';
     $fromDate = isset($_GET['fromDate']) ? $conn->real_escape_string($_GET['fromDate']) : '';
     $toDate = isset($_GET['toDate']) ? $conn->real_escape_string($_GET['toDate']) : '';
+    $adminId = isset($_GET['adminId']) ? (int)$_GET['adminId'] : 0;
     
     // Build where clause
     $whereConditions = [];
@@ -549,6 +554,9 @@ function getFeePayments($conn) {
     if ($toDate) {
         $whereConditions[] = "fp.payment_date <= '$toDate'";
     }
+    if ($adminId > 0) {
+        $whereConditions[] = "fp.admin_id = $adminId";
+    }
     
     $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
     
@@ -561,7 +569,7 @@ function getFeePayments($conn) {
     
     // Get payments with student info
     $query = "SELECT fp.id, fp.student_id, fp.admin_id, fp.amount, fp.remark, fp.payment_date, fp.created_at, 
-                     s.name as student_name, s.class, s.aadharNumber,
+                     s.name as student_name, s.gender, s.class, s.aadharNumber, s.fatherName,
                      a.name as admin_name
               FROM fee_payments fp
               JOIN students s ON fp.student_id = s.id
@@ -587,6 +595,84 @@ function getFeePayments($conn) {
     ]);
 }
 
+function getFeePaymentSummary($conn) {
+    $auth = Auth::getAuthorization();
+    if (!$auth) {
+        sendResponse(false, 'Not authorized', null, 401);
+    }
+
+    $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+    $class = isset($_GET['class']) ? $conn->real_escape_string($_GET['class']) : '';
+    $fromDate = isset($_GET['fromDate']) ? $conn->real_escape_string($_GET['fromDate']) : '';
+    $toDate = isset($_GET['toDate']) ? $conn->real_escape_string($_GET['toDate']) : '';
+    $adminId = isset($_GET['adminId']) ? (int)$_GET['adminId'] : 0;
+
+    $whereConditions = [];
+    if ($search) {
+        $whereConditions[] = "(s.name LIKE '%$search%')";
+    }
+    if ($class) {
+        $whereConditions[] = "s.class = '$class'";
+    }
+    if ($fromDate) {
+        $whereConditions[] = "fp.payment_date >= '$fromDate'";
+    }
+    if ($toDate) {
+        $whereConditions[] = "fp.payment_date <= '$toDate'";
+    }
+    if ($adminId > 0) {
+        $whereConditions[] = "fp.admin_id = $adminId";
+    }
+
+    $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
+
+    $summaryQuery = "SELECT 
+                        COUNT(fp.id) as total_payments,
+                        COALESCE(SUM(fp.amount), 0) as total_amount,
+                        COALESCE(AVG(fp.amount), 0) as average_amount,
+                        COUNT(DISTINCT fp.student_id) as unique_students
+                     FROM fee_payments fp
+                     JOIN students s ON fp.student_id = s.id
+                     JOIN admins a ON fp.admin_id = a.id
+                     $whereClause";
+    $summaryResult = $conn->query($summaryQuery);
+    $summary = $summaryResult->fetch_assoc();
+
+    $adminBreakdownQuery = "SELECT 
+                                a.id as admin_id,
+                                a.name as admin_name,
+                                COUNT(fp.id) as payment_count,
+                                COALESCE(SUM(fp.amount), 0) as total_amount
+                            FROM fee_payments fp
+                            JOIN students s ON fp.student_id = s.id
+                            JOIN admins a ON fp.admin_id = a.id
+                            $whereClause
+                            GROUP BY a.id, a.name
+                            ORDER BY total_amount DESC, admin_name ASC";
+    $adminBreakdownResult = $conn->query($adminBreakdownQuery);
+    $adminBreakdown = [];
+    while ($row = $adminBreakdownResult->fetch_assoc()) {
+        $adminBreakdown[] = $row;
+    }
+
+    $adminOptionsResult = $conn->query("SELECT id, name FROM admins ORDER BY name ASC");
+    $admins = [];
+    while ($row = $adminOptionsResult->fetch_assoc()) {
+        $admins[] = $row;
+    }
+
+    sendResponse(true, 'Success', [
+        'summary' => [
+            'totalPayments' => (int)$summary['total_payments'],
+            'totalAmount' => (float)$summary['total_amount'],
+            'averageAmount' => (float)$summary['average_amount'],
+            'uniqueStudents' => (int)$summary['unique_students'],
+        ],
+        'paymentsByAdmin' => $adminBreakdown,
+        'admins' => $admins,
+    ]);
+}
+
 function getFeePayment($conn, $id) {
     $auth = Auth::getAuthorization();
     if (!$auth) {
@@ -595,7 +681,7 @@ function getFeePayment($conn, $id) {
     
     $id = (int)$id;
     $query = "SELECT fp.id, fp.student_id, fp.admin_id, fp.amount, fp.remark, fp.payment_date, fp.created_at, fp.updated_at,
-                     s.name as student_name, s.class, s.aadharNumber, s.fatherName,
+                     s.name as student_name, s.gender, s.class, s.aadharNumber, s.fatherName,
                      a.name as admin_name, a.email as admin_email
               FROM fee_payments fp
               JOIN students s ON fp.student_id = s.id

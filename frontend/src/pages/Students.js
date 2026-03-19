@@ -4,6 +4,12 @@ import Layout from '../components/Layout';
 import { studentAPI } from '../utils/api';
 import '../styles/list.css';
 
+const getGenderIconClass = (gender) => {
+  if (gender === 'Male') return 'fas fa-mars';
+  if (gender === 'Female') return 'fas fa-venus';
+  return 'fas fa-user';
+};
+
 const Students = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
@@ -11,11 +17,13 @@ const Students = () => {
   const [classFilter, setClassFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalStudents, setTotalStudents] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchStudents();
-  }, [search, classFilter, currentPage]);
+  }, [search, classFilter, currentPage, pageSize]);
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -24,14 +32,28 @@ const Students = () => {
         search,
         class: classFilter,
         page: currentPage,
-        limit: 10,
+        limit: pageSize,
       });
-      setStudents(response.data.data.students);
-      setTotalPages(response.data.data.pages);
+
+      setStudents(response.data.data.students || []);
+      setTotalPages(response.data.data.pages || 1);
+      setTotalStudents(response.data.data.total || 0);
     } catch (error) {
       console.error('Error fetching students:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -63,13 +85,15 @@ const Students = () => {
           <div className="search-bar">
             <input
               type="text"
-              placeholder="Search by name or Samagra ID..."
+              placeholder="Search by name or Aadhar No..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-            />            <i className="fas fa-magnifying-glass"></i>            <select
+            />
+            <i className="fas fa-magnifying-glass"></i>
+            <select
               value={classFilter}
               onChange={(e) => {
                 setClassFilter(e.target.value);
@@ -93,8 +117,9 @@ const Students = () => {
                 <thead>
                   <tr>
                     <th>Name</th>
+                    <th>Father Name</th>
                     <th>Class</th>
-                    <th>Samagra ID</th>
+                    <th>Aadhar No</th>
                     <th>Mobile</th>
                     <th>Category</th>
                     <th>Actions</th>
@@ -103,9 +128,18 @@ const Students = () => {
                 <tbody>
                   {students.map((student) => (
                     <tr key={student._id}>
-                      <td>{student.name}</td>
+                      <td>
+                        <span className="name-with-gender">
+                          <i
+                            className={`${getGenderIconClass(student.gender)} gender-icon gender-icon-${(student.gender || '').toLowerCase()}`}
+                            aria-hidden="true"
+                          ></i>
+                          <span>{student.name}</span>
+                        </span>
+                      </td>
+                      <td>{student.fatherName}</td>
                       <td>{student.class}</td>
-                      <td>{student.samagra_id}</td>
+                      <td>{student.aadharNumber}</td>
                       <td>{student.mobileNumber}</td>
                       <td>
                         <span className="badge badge-warning">{student.category}</span>
@@ -137,22 +171,51 @@ const Students = () => {
                 </tbody>
               </table>
 
-              <div className="pagination">
-                {currentPage > 1 && (
-                  <button onClick={() => setCurrentPage(currentPage - 1)}>← Previous</button>
-                )}
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <div className="fee-pagination-section">
+                <div className="pagination-left">
+                  <label className="rows-per-page">
+                    Rows per page:
+                    <select
+                      value={pageSize}
+                      onChange={(e) => {
+                        setPageSize(parseInt(e.target.value, 10));
+                        setCurrentPage(1);
+                      }}
+                      className="page-size-select"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </label>
+                  <span className="page-info">Total: {totalStudents} students</span>
+                </div>
+
+                <div className="pagination-center">
+                  <span className="page-indicator">
+                    Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+                  </span>
+                </div>
+
+                <div className="pagination-controls">
                   <button
-                    key={page}
-                    className={currentPage === page ? 'active' : ''}
-                    onClick={() => setCurrentPage(page)}
+                    className="btn btn-pagination"
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    title="Previous Page"
                   >
-                    {page}
+                    <i className="fas fa-chevron-left"></i> Previous
                   </button>
-                ))}
-                {currentPage < totalPages && (
-                  <button onClick={() => setCurrentPage(currentPage + 1)}>Next →</button>
-                )}
+                  <button
+                    className="btn btn-pagination"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    title="Next Page"
+                  >
+                    Next <i className="fas fa-chevron-right"></i>
+                  </button>
+                </div>
               </div>
             </>
           ) : (

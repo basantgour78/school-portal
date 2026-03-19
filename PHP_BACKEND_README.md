@@ -171,6 +171,7 @@ GET    /api/index.php?request=students/statistics/summary
 ### Fee Payments
 ```
 GET    /api/index.php?request=fee-payments
+GET    /api/index.php?request=fee-payments/summary
 GET    /api/index.php?request=fee-payments/1
 POST   /api/index.php?request=fee-payments
 PUT    /api/index.php?request=fee-payments/1
@@ -180,10 +181,19 @@ DELETE /api/index.php?request=fee-payments/1
 **GET /fee-payments supports parameters:**
 - `search` - Search by student name
 - `class` - Filter by class
+- `adminId` - Filter by admin
 - `fromDate` - Filter payments from date
 - `toDate` - Filter payments to date
 - `page` - Pagination page number
 - `limit` - Results per page
+
+**GET /fee-payments/summary returns:**
+- `summary.totalPayments`
+- `summary.totalAmount`
+- `summary.averageAmount`
+- `summary.uniqueStudents`
+- `paymentsByAdmin`
+- `admins`
 
 ---
 
@@ -224,18 +234,19 @@ Expected response:
 - Comprehensive form (15+ fields)
 - Personal info including gender, IDs, parental info, banking
 - Validation for all fields
-- Search by name or Samagra ID
+- Search by name or Aadhar number
 - Filter by class
 - Detailed profiles
 
 ### ✅ Fee Payment Management
 - Record fee payments with admin tracking
 - Search payments by student name (autocomplete)
-- Filter by class and date range
+- Filter by class, admin, and date range
 - Pagination support
 - Auto-capture admin ID for payment accountability
 - Update and delete payment records
 - Professional receipt generation for printing
+- Summary endpoint for fee totals and admin-wise reporting
 
 ### ✅ Dashboard
 - Real-time statistics

@@ -10,11 +10,13 @@ const Teachers = () => {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalTeachers, setTotalTeachers] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchTeachers();
-  }, [search, currentPage]);
+  }, [search, currentPage, pageSize]);
 
   const fetchTeachers = async () => {
     setLoading(true);
@@ -22,14 +24,28 @@ const Teachers = () => {
       const response = await teacherAPI.getAll({
         search,
         page: currentPage,
-        limit: 10,
+        limit: pageSize,
       });
-      setTeachers(response.data.data.teachers);
-      setTotalPages(response.data.data.pages);
+
+      setTeachers(response.data.data.teachers || []);
+      setTotalPages(response.data.data.pages || 1);
+      setTotalTeachers(response.data.data.total || 0);
     } catch (error) {
       console.error('Error fetching teachers:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -119,22 +135,51 @@ const Teachers = () => {
                 </tbody>
               </table>
 
-              <div className="pagination">
-                {currentPage > 1 && (
-                  <button onClick={() => setCurrentPage(currentPage - 1)}><i className="fas fa-chevron-left"></i> Previous</button>
-                )}
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <div className="fee-pagination-section">
+                <div className="pagination-left">
+                  <label className="rows-per-page">
+                    Rows per page:
+                    <select
+                      value={pageSize}
+                      onChange={(e) => {
+                        setPageSize(parseInt(e.target.value, 10));
+                        setCurrentPage(1);
+                      }}
+                      className="page-size-select"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </label>
+                  <span className="page-info">Total: {totalTeachers} teachers</span>
+                </div>
+
+                <div className="pagination-center">
+                  <span className="page-indicator">
+                    Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+                  </span>
+                </div>
+
+                <div className="pagination-controls">
                   <button
-                    key={page}
-                    className={currentPage === page ? 'active' : ''}
-                    onClick={() => setCurrentPage(page)}
+                    className="btn btn-pagination"
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    title="Previous Page"
                   >
-                    {page}
+                    <i className="fas fa-chevron-left"></i> Previous
                   </button>
-                ))}
-                {currentPage < totalPages && (
-                  <button onClick={() => setCurrentPage(currentPage + 1)}>Next <i className="fas fa-chevron-right"></i></button>
-                )}
+                  <button
+                    className="btn btn-pagination"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    title="Next Page"
+                  >
+                    Next <i className="fas fa-chevron-right"></i>
+                  </button>
+                </div>
               </div>
             </>
           ) : (

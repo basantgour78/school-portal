@@ -4,6 +4,12 @@ import Layout from '../components/Layout';
 import { feePaymentAPI, studentAPI } from '../utils/api';
 import '../styles/list.css';
 
+const getGenderIconClass = (gender) => {
+  if (gender === 'Male') return 'fas fa-mars';
+  if (gender === 'Female') return 'fas fa-venus';
+  return 'fas fa-user';
+};
+
 const FeeStatement = () => {
   const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
@@ -197,9 +203,14 @@ const FeeStatement = () => {
       <div className="list-page">
         <div className="list-header">
           <h1>Fee Statement</h1>
-          <button className="btn btn-primary" onClick={() => navigate('/fee-payment')}>
-            <i className="fas fa-plus"></i> Add Payment
-          </button>
+          <div className="header-actions">
+            <button className="btn btn-secondary" onClick={() => navigate('/fee-details')}>
+              <i className="fas fa-chart-pie"></i> Fee Details
+            </button>
+            <button className="btn btn-primary" onClick={() => navigate('/fee-payment')}>
+              <i className="fas fa-plus"></i> Add Payment
+            </button>
+          </div>
         </div>
 
         {message && (
@@ -268,7 +279,13 @@ const FeeStatement = () => {
                               setCurrentPage(1);
                             }}
                           >
-                            <strong>{student.name}</strong>
+                            <strong className="name-with-gender">
+                              <i
+                                className={`${getGenderIconClass(student.gender)} gender-icon gender-icon-${(student.gender || '').toLowerCase()}`}
+                                aria-hidden="true"
+                              ></i>
+                              <span>{student.name}</span>
+                            </strong>
                             <span className="class-badge">Class {student.class}</span>
                           </div>
                         ))
@@ -355,22 +372,30 @@ const FeeStatement = () => {
                   <tr>
                     <th>Student Name</th>
                     <th>Class</th>
+                    <th>Aadhar</th>
                     <th>Amount</th>
                     <th>Payment Date</th>
-                    <th>Admin Name</th>
-                    <th>Aadhar</th>
+                    <th>Received By</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {payments.map((payment) => (
                     <tr key={payment.id}>
-                      <td>{payment.student_name}</td>
+                      <td>
+                        <span className="name-with-gender">
+                          <i
+                            className={`${getGenderIconClass(payment.gender)} gender-icon gender-icon-${(payment.gender || '').toLowerCase()}`}
+                            aria-hidden="true"
+                          ></i>
+                          <span>{payment.student_name}</span>
+                        </span>
+                      </td>
                       <td>{payment.class}</td>
+                      <td>{payment.aadharNumber}</td>
                       <td>₹{parseFloat(payment.amount).toFixed(2)}</td>
                       <td>{new Date(payment.payment_date).toLocaleDateString()}</td>
                       <td>{payment.admin_name}</td>
-                      <td>{payment.aadharNumber}</td>
                       <td>
                         <button
                           className="btn btn-sm btn-info"
@@ -445,7 +470,13 @@ const FeeStatement = () => {
               <div className="detail-grid">
                 <div className="detail-item">
                   <label>Student Name:</label>
-                  <p>{selectedPayment.student_name}</p>
+                  <p className="name-with-gender">
+                    <i
+                      className={`${getGenderIconClass(selectedPayment.gender)} gender-icon gender-icon-${(selectedPayment.gender || '').toLowerCase()}`}
+                      aria-hidden="true"
+                    ></i>
+                    <span>{selectedPayment.student_name}</span>
+                  </p>
                 </div>
                 <div className="detail-item">
                   <label>Father's Name:</label>
@@ -519,7 +550,17 @@ const FeeStatement = () => {
                 <h3>STUDENT INFORMATION</h3>
                 <div className="receipt-row">
                   <div className="receipt-col">
-                    <p><strong>Student Name:</strong><br />{selectedPayment.student_name}</p>
+                    <p>
+                      <strong>Student Name:</strong>
+                      <br />
+                      <span className="name-with-gender">
+                        <i
+                          className={`${getGenderIconClass(selectedPayment.gender)} gender-icon gender-icon-${(selectedPayment.gender || '').toLowerCase()}`}
+                          aria-hidden="true"
+                        ></i>
+                        <span>{selectedPayment.student_name}</span>
+                      </span>
+                    </p>
                   </div>
                   <div className="receipt-col">
                     <p><strong>Class:</strong><br />{selectedPayment.class}</p>

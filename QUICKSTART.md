@@ -69,6 +69,7 @@ Once frontend is running:
   - Parental information (parents' Aadhar)
   - Banking details (optional)
 - ✅ List students with filtering and search
+- ✅ Student list shows gender icon, father name, and Aadhar number
 - ✅ View detailed student profiles with gender
 - ✅ Edit student information
 - ✅ Delete students
@@ -84,8 +85,14 @@ Once frontend is running:
   - Filter by class (real-time)
   - Filter by date range (real-time)
   - Paginate through large payment lists
+  - Show admin name in the payment list
   - View payment details in modal
   - **Print professional fee receipts** with all payment details
+- ✅ Fee Details
+  - Filter by student, class, admin, and date range
+  - See total collection, total payments, average payment, and unique students
+  - Review admin-wise fee totals
+  - Open full payment details in popup view
 
 ## 5. Sample Data
 
@@ -135,6 +142,7 @@ The application features a modern, professional interface with:
 
 ### Fee Payments
 - GET /api/fee-payments - List all (with search & filters)
+- GET /api/fee-payments/summary - Get fee totals and admin-wise summary
 - POST /api/fee-payments - Record payment
 - GET /api/fee-payments/:id - Get payment details
 - PUT /api/fee-payments/:id - Update payment
@@ -193,13 +201,14 @@ When filling forms, remember:
 - Comprehensive form with 15+ fields including gender
 - Validation for all critical fields
 - Advanced filtering by class
-- Search by name or Samagra ID
+- Search by name or Aadhar number
 - Detailed student profiles
 
 **Fee Payment System**
 - Record and track student fee payments
 - Admin accountability for each payment
 - Advanced filtering and search
+- Separate Fee Details report with totals and admin-wise breakdown
 - Professional receipt printing
 - Payment history and detailed view
 

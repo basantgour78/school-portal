@@ -158,7 +158,8 @@ define('JWT_SECRET', 'your_unique_secret_key_here');
 - `GET /api/index.php?request=students/statistics/summary` - Get statistics
 
 ### Fee Payments
-- `GET /api/index.php?request=fee-payments` - List all payments (supports search, class filter, date range, pagination)
+- `GET /api/index.php?request=fee-payments` - List all payments (supports search, class filter, admin filter, date range, pagination)
+- `GET /api/index.php?request=fee-payments/summary` - Get filtered fee totals and admin-wise summaries
 - `POST /api/index.php?request=fee-payments` - Record new payment (auto-captures admin ID)
 - `GET /api/index.php?request=fee-payments/1` - Get payment details
 - `PUT /api/index.php?request=fee-payments/1` - Update payment

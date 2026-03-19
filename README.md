@@ -21,9 +21,10 @@ A comprehensive web application for managing school operations including teacher
   - Parental info: Father's and Mother's Aadhar numbers
   - Banking: Account number, IFSC code, Bank name
   - Documents: File uploads
-- **Advanced Search & Filters**: Filter by class, search by name or Samagra ID
+- **Advanced Search & Filters**: Filter by class, search by name or Aadhar number
 - **Detailed Student Profiles**: Comprehensive student profiles with gender information
 - **Gender Field**: Track student gender (Male/Female) in all forms and profiles
+- **Improved Student List**: Student table includes gender icon, father name, class, Aadhar number, and shared pagination controls
 
 ### Fee Management
 - **Fee Payment Recording**: Admin-only feature to record student fee payments
@@ -37,6 +38,11 @@ A comprehensive web application for managing school operations including teacher
   - Filter by date range (From/To)
   - Pagination with configurable rows per page
   - Real-time filtering (no apply button needed)
+- **Fee Details Page**: Dedicated admin reporting page
+  - Filter by student, class, date range, and receiving admin
+  - View total collection, total payments, average payment, and unique students
+  - See admin-wise fee collection totals
+  - Open per-payment detail popup without cluttering the table
 - **Payment Details Modal**: View detailed payment information
   - Student and payment details
   - Admin who received the payment
@@ -169,7 +175,8 @@ The frontend will open at `http://localhost:3000`
 - `GET /api/students/statistics/summary` - Get statistics
 
 ### Fee Payments
-- `GET /api/fee-payments` - Get all fee payments (with search, class filter, date range, pagination)
+- `GET /api/fee-payments` - Get all fee payments (with search, class filter, admin filter, date range, pagination)
+- `GET /api/fee-payments/summary` - Get filtered fee totals and admin-wise summaries
 - `POST /api/fee-payments` - Record new fee payment (auto-captures admin ID)
 - `GET /api/fee-payments/:id` - Get payment details
 - `PUT /api/fee-payments/:id` - Update fee payment
@@ -209,6 +216,7 @@ The frontend will open at `http://localhost:3000`
 - **Payment Recording**: Admins can record student fee payments with details
 - **Payment Tracking**: Each payment is associated with the admin who recorded it
 - **Advanced Reporting**: Search, filter by class/date, and paginate through payments
+- **Detailed Reporting**: Filter fee data by admin and view summary totals on the Fee Details page
 - **Receipt Generation**: Print professional receipts for payments
 - **Real-time Filters**: Filters work instantly as you type (student name) or select (class, dates)
 
@@ -219,7 +227,7 @@ Both teacher and student profiles can be printed with the print button. The styl
 ### Backend (Heroku/Railway/Render)
 1. Set environment variables on the platform
 2. Deploy using git push or platform CLI
-3. Ensure MongoDB is accessible from deployment platform
+3. Ensure MySQL is accessible from the deployment platform
 
 ### Frontend (Vercel/Netlify)
 1. Set `REACT_APP_API_URL` environment variable
@@ -261,7 +269,8 @@ school-project/
     │   │   ├── StudentForm.js
     │   │   ├── StudentDetail.js
     │   │   ├── FeePayment.js
-    │   │   └── FeeStatement.js
+    │   │   ├── FeeStatement.js
+    │   │   └── FeeDetails.js
     │   ├── utils/
     │   │   ├── api.js
     │   │   └── validation.js

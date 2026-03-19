@@ -4,6 +4,12 @@ import Layout from "../components/Layout";
 import { feePaymentAPI, studentAPI } from "../utils/api";
 import "../styles/form.css";
 
+const getGenderIconClass = (gender) => {
+  if (gender === "Male") return "fas fa-mars";
+  if (gender === "Female") return "fas fa-venus";
+  return "fas fa-user";
+};
+
 const FeePayment = ({ isEditMode }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -54,6 +60,7 @@ const FeePayment = ({ isEditMode }) => {
       setSelectedStudent({
         id: payment.student_id,
         name: payment.student_name,
+        gender: payment.gender,
         class: payment.class,
         aadharNumber: payment.aadharNumber,
         fatherName: payment.fatherName,
@@ -276,7 +283,13 @@ const FeePayment = ({ isEditMode }) => {
                           className="student-search-item"
                           onMouseDown={() => handleSelectStudent(student)}
                         >
-                          <div className="student-name">{student.name}</div>
+                          <div className="student-name name-with-gender">
+                            <i
+                              className={`${getGenderIconClass(student.gender)} gender-icon gender-icon-${(student.gender || "").toLowerCase()}`}
+                              aria-hidden="true"
+                            ></i>
+                            <span>{student.name}</span>
+                          </div>
                           <div className="student-meta">
                             <span className="class-badge">Class {student.class}</span>
                             <span className="aadhar-badge">{student.aadharNumber}</span>
@@ -331,7 +344,13 @@ const FeePayment = ({ isEditMode }) => {
                 <div className="info-badge">
                   <i className="fas fa-info-circle"></i>
                   <span className="badge-label">Selected Student:</span>
-                  <span className="badge-value">{selectedStudent.name}</span>
+                  <span className="badge-value name-with-gender">
+                    <i
+                      className={`${getGenderIconClass(selectedStudent.gender)} gender-icon gender-icon-${(selectedStudent.gender || "").toLowerCase()}`}
+                      aria-hidden="true"
+                    ></i>
+                    <span>{selectedStudent.name}</span>
+                  </span>
                 </div>
                 <div className="info-row">
                   <div className="info-col">

@@ -14,6 +14,7 @@ import StudentForm from './pages/StudentForm';
 import StudentDetail from './pages/StudentDetail';
 import FeeStatement from './pages/FeeStatement';
 import FeePayment from './pages/FeePayment';
+import FeeDetails from './pages/FeeDetails';
 
 function App() {
   return (
@@ -122,6 +123,14 @@ function App() {
           element={
             <ProtectedRoute>
               <FeePayment isEditMode={true} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/fee-details"
+          element={
+            <ProtectedRoute>
+              <FeeDetails />
             </ProtectedRoute>
           }
         />

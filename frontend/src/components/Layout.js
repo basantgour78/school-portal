@@ -32,6 +32,9 @@ const Layout = ({ children }) => {
           <Link to="/fee-statement" className="nav-item">
             <i className="fas fa-wallet"></i> Fee Statement
           </Link>
+          <Link to="/fee-details" className="nav-item">
+            <i className="fas fa-file-invoice-dollar"></i> Fee Details
+          </Link>
         </nav>
 
         <div className="sidebar-footer">
