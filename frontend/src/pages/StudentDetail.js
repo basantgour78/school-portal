@@ -59,13 +59,13 @@ const StudentDetail = () => {
           <h1>{student.name}</h1>
           <div className="profile-actions">
             <button className="btn btn-primary" onClick={() => navigate(`/students/edit/${id}`)}>
-              ✏️ Edit
+              <i className="fas fa-pen"></i> Edit
             </button>
             <button className="btn btn-danger" onClick={handleDelete}>
-              🗑️ Delete
+              <i className="fas fa-trash"></i> Delete
             </button>
             <button className="btn btn-secondary" onClick={() => navigate('/students')}>
-              ← Back
+              <i className="fas fa-arrow-left"></i> Back
             </button>
           </div>
         </div>

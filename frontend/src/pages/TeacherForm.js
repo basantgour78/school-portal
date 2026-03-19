@@ -95,7 +95,7 @@ const TeacherForm = ({ isEditMode }) => {
         <div className="form-header">
           <h1>{isEditMode ? 'Edit Teacher' : 'Add New Teacher'}</h1>
           <button className="btn btn-secondary" onClick={() => navigate('/teachers')}>
-            ← Back
+            <i className="fas fa-arrow-left"></i> Back
           </button>
         </div>
 

@@ -180,7 +180,7 @@ const FeeStatement = () => {
         <div className="list-header">
           <h1>Fee Statement</h1>
           <button className="btn btn-primary" onClick={() => navigate('/fee-payment')}>
-            + Add Payment
+            <i className="fas fa-plus"></i> Add Payment
           </button>
         </div>
 
@@ -193,7 +193,7 @@ const FeeStatement = () => {
         {/* Filter Section */}
         <div className="card fee-filter-card">
           <div className="filter-header">
-            <h3>🔍 Search & Filter Payments</h3>
+            <h3><i className="fas fa-magnifying-glass"></i> Search & Filter Payments</h3>
           </div>
           
           <div className="filter-content">
@@ -280,10 +280,10 @@ const FeeStatement = () => {
 
             <div className="filter-actions">
               <button className="btn btn-primary filter-btn" onClick={handleApplyFilters}>
-                🔍 Apply Filters
+                <i className="fas fa-magnifying-glass"></i> Apply Filters
               </button>
               <button className="btn btn-secondary filter-btn" onClick={handleResetFilters}>
-                ↻ Reset
+                <i className="fas fa-rotate-right"></i> Reset
               </button>
             </div>
           </div>
@@ -323,7 +323,7 @@ const FeeStatement = () => {
                           className="btn btn-sm btn-info"
                           onClick={() => handleViewDetails(payment.id)}
                         >
-                          👁️ View
+                          <i className="fas fa-eye"></i> View
                         </button>
                       </td>
                     </tr>
@@ -360,7 +360,7 @@ const FeeStatement = () => {
                     disabled={currentPage === 1}
                     title="Previous Page"
                   >
-                    ◀ Previous
+                    <i className="fas fa-chevron-left"></i> Previous
                   </button>
                   <button
                     className="btn btn-pagination"
@@ -368,7 +368,7 @@ const FeeStatement = () => {
                     disabled={currentPage === totalPages}
                     title="Next Page"
                   >
-                    Next ▶
+                    Next <i className="fas fa-chevron-right"></i>
                   </button>
                 </div>
               </div>
@@ -384,7 +384,7 @@ const FeeStatement = () => {
             <div className="modal-header">
               <h2>Payment Details</h2>
               <button className="modal-close" onClick={() => setShowDetails(false)}>
-                ✕
+                <i className="fas fa-xmark"></i>
               </button>
             </div>
 
@@ -436,7 +436,7 @@ const FeeStatement = () => {
                 className="btn btn-primary"
                 onClick={handlePrintReceipt}
               >
-                🖨️ Print Receipt
+                <i className="fas fa-print"></i> Print Receipt
               </button>
             </div>
           </div>

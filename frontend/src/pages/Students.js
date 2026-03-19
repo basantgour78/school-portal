@@ -55,7 +55,7 @@ const Students = () => {
             className="btn btn-primary"
             onClick={() => navigate('/students/add')}
           >
-            ➕ Add New Student
+            <i className="fas fa-plus"></i> Add New Student
           </button>
         </div>
 
@@ -69,8 +69,7 @@ const Students = () => {
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-            />
-            <select
+            />            <i className="fas fa-magnifying-glass"></i>            <select
               value={classFilter}
               onChange={(e) => {
                 setClassFilter(e.target.value);
@@ -117,19 +116,19 @@ const Students = () => {
                             className="btn btn-primary"
                             onClick={() => navigate(`/students/${student._id}`)}
                           >
-                            View
+                            <i className="fas fa-eye"></i> View
                           </button>
                           <button
                             className="btn btn-secondary"
                             onClick={() => navigate(`/students/edit/${student._id}`)}
                           >
-                            Edit
+                            <i className="fas fa-pen"></i> Edit
                           </button>
                           <button
                             className="btn btn-danger"
                             onClick={() => handleDelete(student._id)}
                           >
-                            Delete
+                            <i className="fas fa-trash"></i> Delete
                           </button>
                         </div>
                       </td>

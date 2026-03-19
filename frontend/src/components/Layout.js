@@ -16,27 +16,27 @@ const Layout = ({ children }) => {
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2>📚 School Portal</h2>
+          <h2><i className="fas fa-book"></i> School Portal</h2>
         </div>
 
         <nav className="sidebar-nav">
           <Link to="/dashboard" className="nav-item">
-            📊 Dashboard
+            <i className="fas fa-chart-bar"></i> Dashboard
           </Link>
           <Link to="/teachers" className="nav-item">
-            👨‍🏫 Teachers
+            <i className="fas fa-chalkboard-user"></i> Teachers
           </Link>
           <Link to="/students" className="nav-item">
-            👨‍🎓 Students
+            <i className="fas fa-graduation-cap"></i> Students
           </Link>
           <Link to="/fee-statement" className="nav-item">
-            💰 Fee Statement
+            <i className="fas fa-wallet"></i> Fee Statement
           </Link>
         </nav>
 
         <div className="sidebar-footer">
           <div className="admin-info">
-            <p>👤 {admin?.name}</p>
+            <p><i className="fas fa-user"></i> {admin?.name}</p>
             <small>{admin?.email}</small>
           </div>
           <button className="btn btn-danger btn-block" onClick={handleLogout}>

@@ -53,7 +53,7 @@ const Teachers = () => {
             className="btn btn-primary"
             onClick={() => navigate('/teachers/add')}
           >
-            ➕ Add New Teacher
+            <i className="fas fa-plus"></i> Add New Teacher
           </button>
         </div>
 
@@ -68,6 +68,7 @@ const Teachers = () => {
                 setCurrentPage(1);
               }}
             />
+            <i className="fas fa-magnifying-glass"></i>
           </div>
 
           {loading ? (
@@ -97,19 +98,19 @@ const Teachers = () => {
                             className="btn btn-primary"
                             onClick={() => navigate(`/teachers/${teacher._id}`)}
                           >
-                            View
+                            <i className="fas fa-eye"></i> View
                           </button>
                           <button
                             className="btn btn-secondary"
                             onClick={() => navigate(`/teachers/edit/${teacher._id}`)}
                           >
-                            Edit
+                            <i className="fas fa-pen"></i> Edit
                           </button>
                           <button
                             className="btn btn-danger"
                             onClick={() => handleDelete(teacher._id)}
                           >
-                            Delete
+                            <i className="fas fa-trash"></i> Delete
                           </button>
                         </div>
                       </td>
@@ -120,7 +121,7 @@ const Teachers = () => {
 
               <div className="pagination">
                 {currentPage > 1 && (
-                  <button onClick={() => setCurrentPage(currentPage - 1)}>← Previous</button>
+                  <button onClick={() => setCurrentPage(currentPage - 1)}><i className="fas fa-chevron-left"></i> Previous</button>
                 )}
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <button
@@ -132,7 +133,7 @@ const Teachers = () => {
                   </button>
                 ))}
                 {currentPage < totalPages && (
-                  <button onClick={() => setCurrentPage(currentPage + 1)}>Next →</button>
+                  <button onClick={() => setCurrentPage(currentPage + 1)}>Next <i className="fas fa-chevron-right"></i></button>
                 )}
               </div>
             </>

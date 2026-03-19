@@ -102,6 +102,17 @@ The application comes with pre-populated sample data:
 
 **Fee Payments**: 9 sample payment records for various students
 
+## 5.1 UI/UX Features
+
+The application features a modern, professional interface with:
+- **Font Awesome Icons**: Professional icon library for all buttons and navigation
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **Gradient Styling**: Modern gradient backgrounds on cards and headers
+- **Real-time Filters**: Fee statement filters update instantly as you type
+- **Autocomplete Search**: Student selection with intelligent dropdown suggestions
+- **Modal Details**: View payment and student information in modal popups
+- **Professional Receipts**: Printable payment receipts styled for A4 or thermal printing
+
 ## 6. API Endpoints Quick Reference
 
 ### Authentication
