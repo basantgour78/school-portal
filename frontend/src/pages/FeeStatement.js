@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { feePaymentAPI, studentAPI } from '../utils/api';
@@ -7,7 +7,6 @@ import '../styles/list.css';
 const FeeStatement = () => {
   const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
-  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   
@@ -23,13 +22,15 @@ const FeeStatement = () => {
   const [toDate, setToDate] = useState('');
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   
+  // API-based search with debouncing
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const searchTimeoutRef = useRef(null);
+  
   // Detail view state
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
-
-  useEffect(() => {
-    fetchStudents();
-  }, []);
 
   useEffect(() => {
     fetchPayments();
@@ -40,16 +41,7 @@ const FeeStatement = () => {
     if (currentPage === 1) {
       fetchPayments();
     }
-  }, [searchTerm, selectedClass, fromDate, toDate]);
-
-  const fetchStudents = async () => {
-    try {
-      const response = await studentAPI.getAll({ limit: 1000 });
-      setStudents(response.data.data.students || []);
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    }
-  };
+  }, [selectedStudent, selectedClass, fromDate, toDate]);
 
   const fetchPayments = async () => {
     setLoading(true);
@@ -76,9 +68,44 @@ const FeeStatement = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
+  // Debounced search for student autocomplete
+  const handleSearchWithDebounce = (value) => {
+    // Don't allow typing if a student is already selected
+    if (selectedStudent) {
+      return;
+    }
+
+    setSearchTerm(value);
+    setShowSearchDropdown(true);
+
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (!value.trim()) {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+      return;
+    }
+
+    setSearchLoading(true);
+
+    // Debounce API call - 300ms
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const response = await studentAPI.getAll({
+          search: value.trim(),
+          limit: 10,
+        });
+        setSearchResults(response.data.data.students || []);
+      } catch (error) {
+        console.error('Error searching students:', error);
+        setSearchResults([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 300);
   };
 
   const handleFilterChange = () => {
@@ -133,6 +160,7 @@ const FeeStatement = () => {
 
   const handleResetFilters = async () => {
     setSearchTerm('');
+    setSelectedStudent(null);
     setSelectedClass('');
     setFromDate('');
     setToDate('');
@@ -155,16 +183,6 @@ const FeeStatement = () => {
       setLoading(false);
     }
   };
-
-  // Get unique classes from students
-  const uniqueClasses = Array.from(new Set(students.map((s) => s.class))).sort();
-
-  // Filter students for autocomplete
-  const filteredStudentsForSearch = searchTerm.trim()
-    ? students.filter((student) =>
-        student.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
 
   if (loading && payments.length === 0) {
     return (
@@ -205,32 +223,60 @@ const FeeStatement = () => {
                     type="text"
                     placeholder="Type student name..."
                     value={searchTerm}
-                    onChange={(e) => {
-                      setSearchTerm(e.target.value);
-                      setCurrentPage(1);
-                      setShowSearchDropdown(true);
+                    onChange={(e) => handleSearchWithDebounce(e.target.value)}
+                    onFocus={() => {
+                      if (searchTerm.trim() && !selectedStudent) {
+                        setShowSearchDropdown(true);
+                      }
                     }}
-                    onFocus={() => setShowSearchDropdown(true)}
-                    onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
                     className="filter-input"
                     autoComplete="off"
+                    disabled={selectedStudent !== null}
                   />
-                  {showSearchDropdown && filteredStudentsForSearch.length > 0 && (
+                  {selectedStudent && (
+                    <button
+                      className="btn-clear-student"
+                      onClick={() => {
+                        setSelectedStudent(null);
+                        setSearchTerm('');
+                        setSearchResults([]);
+                        setShowSearchDropdown(false);
+                        setPayments([]);
+                      }}
+                      title="Clear student selection"
+                    >
+                      <i className="fas fa-times"></i>
+                    </button>
+                  )}
+                  {showSearchDropdown && !selectedStudent && (
                     <div className="autocomplete-dropdown">
-                      {filteredStudentsForSearch.slice(0, 8).map((student) => (
-                        <div
-                          key={student.id}
-                          className="autocomplete-item"
-                          onClick={() => {
-                            setSearchTerm(student.name);
-                            setShowSearchDropdown(false);
-                            setCurrentPage(1);
-                          }}
-                        >
-                          <strong>{student.name}</strong>
-                          <span className="class-badge">Class {student.class}</span>
+                      {searchLoading ? (
+                        <div className="autocomplete-loading">
+                          <i className="fas fa-spinner fa-spin"></i> Searching...
                         </div>
-                      ))}
+                      ) : searchResults.length > 0 ? (
+                        searchResults.map((student) => (
+                          <div
+                            key={student.id}
+                            className="autocomplete-item"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              setSelectedStudent(student);
+                              setSearchTerm(student.name);
+                              setShowSearchDropdown(false);
+                              setSearchResults([]);
+                              setCurrentPage(1);
+                            }}
+                          >
+                            <strong>{student.name}</strong>
+                            <span className="class-badge">Class {student.class}</span>
+                          </div>
+                        ))
+                      ) : searchTerm.trim() ? (
+                        <div className="autocomplete-empty">
+                          No students found
+                        </div>
+                      ) : null}
                     </div>
                   )}
                 </div>
@@ -243,11 +289,18 @@ const FeeStatement = () => {
                   setCurrentPage(1);
                 }} className="filter-input">
                   <option value="">All Classes</option>
-                  {uniqueClasses.map((classVal) => (
-                    <option key={classVal} value={classVal}>
-                      Class {classVal}
-                    </option>
-                  ))}
+                  <option value="1">Class 1</option>
+                  <option value="2">Class 2</option>
+                  <option value="3">Class 3</option>
+                  <option value="4">Class 4</option>
+                  <option value="5">Class 5</option>
+                  <option value="6">Class 6</option>
+                  <option value="7">Class 7</option>
+                  <option value="8">Class 8</option>
+                  <option value="9">Class 9</option>
+                  <option value="10">Class 10</option>
+                  <option value="11">Class 11</option>
+                  <option value="12">Class 12</option>
                 </select>
               </div>
 
