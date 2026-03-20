@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { feePaymentAPI, studentAPI } from '../utils/api';
 import '../styles/list.css';
@@ -17,6 +18,7 @@ const formatCurrency = (value) =>
   }).format(Number(value || 0));
 
 const FeeDetails = () => {
+  const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
   const [summary, setSummary] = useState({
     totalPayments: 0,
@@ -147,11 +149,22 @@ const FeeDetails = () => {
     }
   };
 
+  const handlePrintReceipt = () => {
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  };
+
   return (
     <Layout>
       <div className="list-page">
         <div className="list-header">
           <h1>Fee Details</h1>
+          <div className="header-actions">
+            <button className="btn btn-primary" onClick={() => navigate('/fee-payment')}>
+              <i className="fas fa-plus"></i> Add New Payment
+            </button>
+          </div>
         </div>
 
         {message && (
@@ -312,24 +325,33 @@ const FeeDetails = () => {
 
         <div className="fee-summary-grid">
           <div className="stat-card fee-stat-card">
+            <div className="stat-icon">
+              <i className="fas fa-money-bill-wave"></i>
+            </div>
             <div className="stat-content">
               <h3>Total Collection</h3>
               <p className="stat-number">{formatCurrency(summary.totalAmount)}</p>
             </div>
           </div>
           <div className="stat-card fee-stat-card">
+            <div className="stat-icon">
+              <i className="fas fa-receipt"></i>
+            </div>
             <div className="stat-content">
               <h3>Total Payments</h3>
               <p className="stat-number">{summary.totalPayments || 0}</p>
             </div>
           </div>
-          <div className="stat-card fee-stat-card">
+          {/* <div className="stat-card fee-stat-card">
             <div className="stat-content">
               <h3>Average Payment</h3>
               <p className="stat-number">{formatCurrency(summary.averageAmount)}</p>
             </div>
-          </div>
+          </div> */}
           <div className="stat-card fee-stat-card">
+            <div className="stat-icon">
+              <i className="fas fa-users"></i>
+            </div>
             <div className="stat-content">
               <h3>Students Covered</h3>
               <p className="stat-number">{summary.uniqueStudents || 0}</p>
@@ -357,7 +379,7 @@ const FeeDetails = () => {
                       <th>Student Name</th>
                       <th>Father Name</th>
                       <th>Class</th>
-                      <th>Aadhar No</th>
+                      <th>Mobile No</th>
                       <th>Amount</th>
                       <th>Payment Date</th>
                       <th>Received By</th>
@@ -378,7 +400,7 @@ const FeeDetails = () => {
                         </td>
                         <td>{payment.fatherName || '-'}</td>
                         <td>{payment.class}</td>
-                        <td>{payment.aadharNumber}</td>
+                        <td>{payment.mobileNumber}</td>
                         <td>{formatCurrency(payment.amount)}</td>
                         <td>{new Date(payment.payment_date).toLocaleDateString('en-IN')}</td>
                         <td>{payment.admin_name}</td>
@@ -533,10 +555,114 @@ const FeeDetails = () => {
                   )}
                 </div>
               </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-primary"
+                  onClick={handlePrintReceipt}
+                >
+                  <i className="fas fa-print"></i> Print Receipt
+                </button>
+              </div>
             </div>
           </div>
         )}
+
       </div>
+
+      {selectedPayment && (
+        <div className="receipt-container">
+          <div className="receipt">
+            <div className="receipt-header">
+              <h1 className="receipt-title">FEE PAYMENT RECEIPT</h1>
+              <div className="receipt-line"></div>
+            </div>
+
+            <div className="receipt-body">
+              <div className="receipt-section">
+                <h3>SCHOOL DETAILS</h3>
+                <p><strong>School Name:</strong> ABC School & College</p>
+                <p><strong>Address:</strong> School Road, City</p>
+                <p><strong>Contact:</strong> (123) 456-7890</p>
+              </div>
+
+              <div className="receipt-line-divider"></div>
+
+              <div className="receipt-section">
+                <h3>STUDENT INFORMATION</h3>
+                <div className="receipt-row">
+                  <div className="receipt-col">
+                    <p>
+                      <strong>Student Name:</strong>
+                      <br />
+                      <span className="name-with-gender">
+                        <i
+                          className={`${getGenderIconClass(selectedPayment.gender)} gender-icon gender-icon-${(selectedPayment.gender || '').toLowerCase()}`}
+                          aria-hidden="true"
+                        ></i>
+                        <span>{selectedPayment.student_name}</span>
+                      </span>
+                    </p>
+                  </div>
+                  <div className="receipt-col">
+                    <p><strong>Class:</strong><br />{selectedPayment.class}</p>
+                  </div>
+                </div>
+                <div className="receipt-row">
+                  <div className="receipt-col">
+                    <p><strong>Father's Name:</strong><br />{selectedPayment.fatherName}</p>
+                  </div>
+                  <div className="receipt-col">
+                    <p><strong>Aadhar Number:</strong><br />{selectedPayment.aadharNumber}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="receipt-line-divider"></div>
+
+              <div className="receipt-section">
+                <h3>PAYMENT DETAILS</h3>
+                <div className="receipt-row">
+                  <div className="receipt-col">
+                    <p><strong>Amount Paid:</strong></p>
+                    <p className="amount">{formatCurrency(selectedPayment.amount)}</p>
+                  </div>
+                  <div className="receipt-col">
+                    <p><strong>Payment Date:</strong><br />{new Date(selectedPayment.payment_date).toLocaleDateString('en-IN')}</p>
+                  </div>
+                </div>
+                {selectedPayment.remark && (
+                  <div className="receipt-row">
+                    <p><strong>Remarks:</strong><br />{selectedPayment.remark}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="receipt-line-divider"></div>
+
+              <div className="receipt-section">
+                <h3>RECEIVED BY</h3>
+                <div className="receipt-row">
+                  <div className="receipt-col">
+                    <p><strong>Name:</strong><br />{selectedPayment.admin_name}</p>
+                  </div>
+                  <div className="receipt-col">
+                    <p><strong>Email:</strong><br />{selectedPayment.admin_email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="receipt-footer">
+                <p><strong>Receipt ID:</strong> RCP{selectedPayment.id}</p>
+                <p className="receipt-timestamp">Printed on: {new Date().toLocaleString('en-IN')}</p>
+              </div>
+            </div>
+
+            <div className="receipt-bottom-line"></div>
+            <p className="receipt-thank-you">Thank You for Your Payment</p>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };

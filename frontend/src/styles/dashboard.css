@@ -8,6 +8,16 @@
   color: #1f2937;
 }
 
+.section-header {
+  margin: 10px 0 20px;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 22px;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -35,6 +45,7 @@
   font-size: 40px;
   min-width: 60px;
   text-align: center;
+  color: #2563eb;
 }
 
 .stat-content h3 {
@@ -51,6 +62,11 @@
   font-size: 32px;
   font-weight: 700;
   color: #2563eb;
+}
+
+.stat-number-money {
+  font-size: 24px;
+  line-height: 1.3;
 }
 
 .charts-grid {

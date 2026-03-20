@@ -4,6 +4,13 @@ import Layout from '../components/Layout';
 import { studentAPI } from '../utils/api';
 import '../styles/profile.css';
 
+
+const getGenderIconClass = (gender) => {
+  if (gender === 'Male') return 'fas fa-mars';
+  if (gender === 'Female') return 'fas fa-venus';
+  return 'fas fa-user';
+};
+
 const StudentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -90,7 +97,9 @@ const StudentDetail = () => {
                 </div>
                 <div className="profile-item">
                   <label>Gender:</label>
-                  <p>{student.gender}</p>
+                  <p><i className={`${getGenderIconClass(student.gender)} gender-icon gender-icon-${(student.gender || '').toLowerCase()}`}
+                        aria-hidden="true"></i> {student.gender}
+                    </p>
                 </div>
                 <div className="profile-item">
                   <label>Class:</label>

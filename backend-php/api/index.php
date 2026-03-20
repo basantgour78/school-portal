@@ -569,7 +569,7 @@ function getFeePayments($conn) {
     
     // Get payments with student info
     $query = "SELECT fp.id, fp.student_id, fp.admin_id, fp.amount, fp.remark, fp.payment_date, fp.created_at, 
-                     s.name as student_name, s.gender, s.class, s.aadharNumber, s.fatherName,
+                     s.name as student_name, s.gender, s.class, s.aadharNumber, s.mobileNumber, s.fatherName,
                      a.name as admin_name
               FROM fee_payments fp
               JOIN students s ON fp.student_id = s.id

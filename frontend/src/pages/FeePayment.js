@@ -395,7 +395,7 @@ const FeePayment = ({ isEditMode }) => {
               <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={() => navigate("/fee-statement")}
+                onClick={() => navigate("/fee-details")}
                 disabled={loading}
               >
                 <i className="fas fa-times"></i>

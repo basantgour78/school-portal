@@ -120,7 +120,7 @@ const Students = () => {
                     <th>Father Name</th>
                     <th>Class</th>
                     <th>Aadhar No</th>
-                    <th>Mobile</th>
+                    <th>Mobile No</th>
                     <th>Category</th>
                     <th>Actions</th>
                   </tr>
